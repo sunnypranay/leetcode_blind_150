@@ -1,17 +1,38 @@
-# LeetCode Blind 150 Solutions
+## Intuition
 
-Welcome to the LeetCode Blind 150 solutions repository! This is a collection of my personal solutions to the handpicked list of 150 problems essential for nailing coding interviews. These problems are sourced from the well-renowned LeetCode platform and part of the "Blind 150" list.
+Given a list of numbers that are in ascending order and a target value, our objective is to find two numbers such that they add up to the target value. One of the quickest ways to do this on a sorted list is to employ a two-pointer technique. Starting with one pointer at the beginning (the smallest value) and one at the end (the largest value), we can adjust our pointers to converge onto a solution. If the current sum is too small, we can move the left pointer to the right (increasing the value), and if the sum is too large, we can move the right pointer to the left (decreasing the value). 
 
-Each problem's solution is encapsulated within a separate branch of this repository. Here's how to navigate to them:
+## Approach
 
-1. Click on the `Branch: main` button located at the top of the repository's file list.
-2. From the dropdown, select the branch corresponding to the problem you're interested in. Each branch is dedicated to a distinct problem's solution.
-3. On selecting the branch, you'll be led to the problem description, my Python solution, along with a thorough explanation of my approach and the solution's time and space complexity.
+1. Initialize two pointers: `left_pointer` at the beginning and `right_pointer` at the end of the list.
+2. Calculate the sum of the values at the `left_pointer` and `right_pointer`.
+3. Compare this sum with the target:
+   - If it's equal to the target, we've found our solution and can return the indices.
+   - If it's greater than the target, decrement the `right_pointer` to try a smaller number.
+   - If it's smaller than the target, increment the `left_pointer` to try a larger number.
+4. Repeat this process until we either find the two numbers or the pointers cross, indicating no solution exists in the list.
 
-Though solutions are provided predominantly in Python, I strongly encourage contributors to submit solutions in other programming languages. It'd be great to have a variety of solutions in different languages.
+## Complexity
 
-Feel free to browse through the solutions, ask any questions, contribute, or provide feedback. Your interaction makes this repository a dynamic space for learning and growth!
+- **Time complexity**: \( O(n) \). In the worst case, we will move one of the pointers across all elements once.
+  
+- **Space complexity**: \( O(1) \). We only use a constant amount of extra space for our pointers and other variables, regardless of the input size.
 
-Happy coding!
+## Code
 
-#LeetCode #Blind150 #CodingInterviewPreparation #DataStructures #Algorithms #Python #ProblemSolving #CompetitiveProgramming
+```python
+class Solution:
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        left_pointer = 0
+        right_pointer = len(numbers) - 1
+
+        while True:
+            if numbers[left_pointer] + numbers[right_pointer] == target:
+                return [left_pointer + 1, right_pointer + 1]
+            
+            if numbers[left_pointer] + numbers[right_pointer] > target:
+                right_pointer -= 1
+            
+            elif numbers[left_pointer] + numbers[right_pointer] < target:
+                left_pointer += 1
+```
