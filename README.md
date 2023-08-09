@@ -1,17 +1,62 @@
-# LeetCode Blind 150 Solutions
+# Intuition
+The problem is to check if any permutation of `s1` is a substring of `s2`. We can solve this by using the sliding window technique. The window should be of the same size as `s1` and should slide over `s2`.
 
-Welcome to the LeetCode Blind 150 solutions repository! This is a collection of my personal solutions to the handpicked list of 150 problems essential for nailing coding interviews. These problems are sourced from the well-renowned LeetCode platform and part of the "Blind 150" list.
+# Approach
+1. If the length of `s1` is greater than `s2`, return False.
+2. Create frequency arrays for `s1` and the first `len(s1)` characters of `s2`.
+3. Track how many characters match perfectly between the two arrays (`matches` variable).
+4. Slide the window over `s2`. At each step:
+    - Check the incoming character of the window in `s2`, adjust its frequency and the `matches` count.
+    - Check the outgoing character of the window in `s2`, adjust its frequency and the `matches` count.
+    - If all 26 characters match perfectly (i.e., `matches == 26`), it means a permutation of `s1` is present in `s2`, return True.
+5. If you've checked all windows and haven't returned True, return False.
 
-Each problem's solution is encapsulated within a separate branch of this repository. Here's how to navigate to them:
+# Complexity
+- Time complexity: $$O(n)$$ where `n` is the length of `s2`. Each character in `s2` is processed once.
+- Space complexity: $$O(1)$$ because the space used by the frequency arrays is constant (26 characters).
 
-1. Click on the `Branch: main` button located at the top of the repository's file list.
-2. From the dropdown, select the branch corresponding to the problem you're interested in. Each branch is dedicated to a distinct problem's solution.
-3. On selecting the branch, you'll be led to the problem description, my Python solution, along with a thorough explanation of my approach and the solution's time and space complexity.
+# Code
+```python
+class Solution:
+    def checkInclusion(self, s1: str, s2: str) -> bool:
+        if len(s1) > len(s2): return False
 
-Though solutions are provided predominantly in Python, I strongly encourage contributors to submit solutions in other programming languages. It'd be great to have a variety of solutions in different languages.
+        s1Count, s2Count = [0] * 26, [0] * 26
 
-Feel free to browse through the solutions, ask any questions, contribute, or provide feedback. Your interaction makes this repository a dynamic space for learning and growth!
+        matches = 0
 
-Happy coding!
+        for i in range(len(s1)):
+            s1Count[ord(s1[i]) - ord('a')] += 1
+            s2Count[ord(s2[i]) - ord('a')] += 1
+        
+        for i in range(len(s1Count)):
+            if s1Count[i] == s2Count[i]:
+                matches += 1
+        
+        left = 0
+        
+        for right in range(len(s1), len(s2)):
+            if matches == 26: return True
+            index = ord(s2[right]) - ord("a")
 
-#LeetCode #Blind150 #CodingInterviewPreparation #DataStructures #Algorithms #Python #ProblemSolving #CompetitiveProgramming
+            s2Count[index] += 1
+
+            if s2Count[index] == s1Count[index]:
+                matches += 1
+            
+            elif s2Count[index] == s1Count[index] + 1:
+                matches -= 1
+            
+            index = ord(s2[left]) - ord("a")
+
+            s2Count[index] -= 1
+
+            if s2Count[index] == s1Count[index]:
+                matches += 1
+            
+            elif s2Count[index] == s1Count[index] - 1:
+                matches -= 1
+            
+            left += 1
+        
+        return matches == 26
